@@ -127,3 +127,65 @@ centers = pd.DataFrame(
 print(centers)
 
 print("\nSUCCESS: Clustering and visualization complete.")
+
+# =========================
+# STEP 9: SILHOUETTE METHOD
+# =========================
+
+from sklearn.metrics import silhouette_score
+from sklearn.decomposition import PCA
+
+print("\nRunning Silhouette Method...")
+
+sil_score = silhouette_score(data, clusters)
+
+print(f"Silhouette Score: {sil_score:.4f}")
+
+# Interpretation guide
+if sil_score >= 0.7:
+    print("Interpretation: Excellent clustering")
+elif sil_score >= 0.5:
+    print("Interpretation: Good clustering")
+elif sil_score >= 0.25:
+    print("Interpretation: Weak clustering")
+else:
+    print("Interpretation: Poor clustering")
+
+
+# =========================
+# STEP 10: COLORED CLUSTER GRAPH (3 DIRECTIONS)
+# =========================
+
+print("\nGenerating colored cluster graph...")
+
+# Reduce data to 2D using PCA
+pca = PCA(n_components=2)
+data_2d = pca.fit_transform(data)
+
+# Define markers for 3 clusters (3 directions)
+markers = ['o', '^', 's']  # circle, triangle, square
+
+plt.figure()
+
+# Plot each cluster with different marker and color
+for cluster_id in range(3):
+
+    cluster_points = data_2d[clusters == cluster_id]
+
+    plt.scatter(
+        cluster_points[:, 0],
+        cluster_points[:, 1],
+        marker=markers[cluster_id],
+        label=f"Cluster {cluster_id}"
+    )
+
+plt.xlabel("PCA Component 1")
+plt.ylabel("PCA Component 2")
+plt.title("Colored Cluster Visualization (3 Directions)")
+plt.legend()
+
+plt.savefig("cluster_colored_graph.png")
+
+plt.show()
+
+print("Colored cluster graph saved as cluster_colored_graph.png")
