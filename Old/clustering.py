@@ -95,9 +95,7 @@ plt.show()
 print("Saved: silhouette_method.png")
 
 
-# =========================
-# STEP 5: FINAL CLUSTERING (k=3)
-# =========================
+
 
 print("\nApplying final clustering...")
 
@@ -111,7 +109,7 @@ clusters = kmeans.fit_predict(data)
 
 df["Cluster"] = clusters
 
-df.to_csv("studentdata_clustered.csv", index=False)
+df.to_csv("studentdata_ordinal_kmeans.csv", index=False)
 
 print("Saved: studentdata_clustered.csv")
 
