@@ -1,34 +1,26 @@
-# ================================
-# STEP 1: Import Required Libraries
-# ================================
 import pandas as pd
 import numpy as np
-
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.metrics import precision_score, confusion_matrix
+import matplotlib.pyplot as plt
 
 
-# ================================
-# STEP 2: Load the Iris Dataset
-# ================================
+
 df = pd.read_csv("SVM/irisdatasets.csv")
 
 print("Dataset Preview:")
 print(df.head(), "\n")
 
 
-# ================================
-# STEP 3: Separate Features and Labels
-# ================================
+
+#Separate Features and Labels
 X = df.drop("species", axis=1)
 y = df["species"]
 
 
-# ================================
-# STEP 4: Split Dataset (80% Train, 20% Test)
-# ================================
+#split data for training and testing
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -38,18 +30,17 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# ================================
-# STEP 5: Feature Scaling
-# ================================
+#Feature Scaling
+
 scaler = StandardScaler()
 
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 
-# ================================
-# STEP 6: Train SVM with Different Kernels and C Values
-# ================================
+
+
+#Train SVM with Different Kernels and C Values
 kernels = ["linear", "poly", "rbf", "sigmoid"]
 C_values = [0.1, 1, 10]
 
@@ -73,9 +64,7 @@ for kernel in kernels:
         models[(kernel, C)] = svm
 
 
-# ================================
-# STEP 7: Display Results Table
-# ================================
+#display result
 results_df = pd.DataFrame(
     results,
     columns=["Kernel", "C Value", "Precision"]
@@ -85,9 +74,7 @@ print("SVM Precision Results:\n")
 print(results_df, "\n")
 
 
-# ================================
-# STEP 8: Get Best Model
-# ================================
+#mo pili ug nindot nga model
 best_row = results_df.loc[results_df["Precision"].idxmax()]
 best_kernel = best_row["Kernel"]
 best_C = best_row["C Value"]
@@ -100,20 +87,13 @@ print(f"C Value: {best_C}")
 print(f"Precision: {best_row['Precision']}\n")
 
 
-# ================================
-# STEP 9: Confusion Matrix of Best Model
-# ================================
+# confusion matrix for best model
 y_best_pred = best_model.predict(X_test)
 
 cm = confusion_matrix(y_test, y_best_pred)
 
 print("Confusion Matrix:")
 print(cm)
-
-
-# ================================
-# STEP 10: Interpretation
-# ================================
 print("\nInterpretation:")
 print("Rows represent ACTUAL classes")
 print("Columns represent PREDICTED classes")
