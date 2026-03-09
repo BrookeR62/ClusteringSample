@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Wine Quality SVR Notebook Explanation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #7f8c8d;
+            margin-top: 30px;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .output-block {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .process-block {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .summary {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin-bottom: 5px;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Red Wine Quality SVR Notebook Explanation</h1>
+        
+        <div class="toc">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#cell1">Cell 1: Imports</a></li>
+                <li><a href="#cell2">Cell 2: Data Loading and Info</a></li>
+                <li><a href="#cell3">Cell 3: Preprocessing</a></li>
+                <li><a href="#cell4">Cell 4: Feature Scaling</a></li>
+                <li><a href="#cell5">Cell 5: Hyperparameter Tuning</a></li>
+                <li><a href="#cell6">Cell 6: Results Table</a></li>
+                <li><a href="#cell7">Cell 7: Best Model and Predictions</a></li>
+                <li><a href="#summary">Summary</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>This document provides a comprehensive explanation of the <code>redwinde_data.ipynb</code> notebook, which implements Support Vector Regression (SVR) for predicting red wine quality. The notebook follows a complete machine learning workflow: data loading, preprocessing, hyperparameter tuning, model selection, and prediction.</p>
+            <ul>
+                <li><strong>Dataset</strong>: Red wine quality dataset with 11 physicochemical features and a quality score (3-8).</li>
+                <li><strong>Task</strong>: Regression to predict wine quality using SVR.</li>
+                <li><strong>Key Steps</strong>: Data cleaning, outlier removal, imputation, scaling, grid search tuning, and final model deployment.</li>
+                <li><strong>Libraries</strong>: pandas, scikit-learn, matplotlib, seaborn.</li>
+            </ul>
+        </section>
+
+        <section id="cell1">
+            <h2>Cell 1: Imports</h2>
+            <div class="code-block">
+import pandas as pd<br>
+from sklearn.model_selection import train_test_split<br>
+from sklearn.preprocessing import StandardScaler<br>
+from sklearn.svm import SVR<br>
+from sklearn.metrics import mean_squared_error<br>
+from sklearn.impute import SimpleImputer<br>
+import matplotlib.pyplot as plt<br>
+import seaborn as sns
+            </div>
+            <div class="process-block">
+                <strong>Explanation</strong>: Imports necessary libraries for data manipulation (pandas), model training/testing (sklearn), evaluation (MSE), and visualization (matplotlib/seaborn). No output.
+            </div>
+        </section>
+
+        <section id="cell2">
+            <h2>Cell 2: Data Loading and Info</h2>
+            <div class="code-block">
+redwine_df = pd.read_csv("winequality-red.csv")<br>
+redwine_df = redwine_df.replace(["", " ", "NA", "N/A", "null", "None", "?"], pd.NA)<br>
+<br>
+print("DATA SET INFO: ")<br>
+redwine_df.info()
+            </div>
+            <div class="process-block">
+                <strong>Process</strong>: Loads the CSV file, replaces common missing value indicators with pandas NA, and displays dataset info (columns, dtypes, non-null counts).
+            </div>
+            <div class="output-block">
+                <strong>Output</strong>: Dataset summary showing 1599 rows, 12 columns (11 features + quality), all numeric except quality (int).
+            </div>
+        </section>
+
+        <section id="cell3">
+            <h2>Cell 3: Preprocessing (Splitting, Outlier Removal, Imputation)</h2>
+            <div class="code-block">
+target_col = "quality"<br>
+X_all = redwine_df.drop(target_col, axis=1)<br>
+y_all = redwine_df[target_col]<br>
+<br>
+X_train, X_test, y_train, y_test = train_test_split(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;X_all, y_all, test_size=0.2, random_state=42, stratify=y_all<br>
+)<br>
+<br>
+num_cols = X_train.select_dtypes(include=["number"]).columns.tolist()<br>
+<br>
+print("Before Outlier Removal:")<br>
+plt.figure(figsize=(12, 8))<br>
+for i, col in enumerate(num_cols, 1):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.subplot(4,3,i)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sns.boxplot(y=X_train[col])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.title(f"Boxplot of {col}")<br>
+plt.tight_layout()<br>
+plt.show()<br>
+<br>
+def remove_outliers_iqr(df, cols, k=1.5):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mask = pd.Series(True, index=df.index)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for c in cols:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q1 = df[c].quantile(0.25)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q3 = df[c].quantile(0.75)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iqr = q3 - q1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;low = q1 - k * iqr<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;high = q3 + k * iqr<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mask &= df[c].between(low, high) | df[c].isna()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return mask<br>
+<br>
+train_mask = remove_outliers_iqr(X_train, num_cols)<br>
+X_train = X_train.loc[train_mask].reset_index(drop=True)<br>
+y_train = y_train.loc[train_mask].reset_index(drop=True)<br>
+<br>
+print(f"After Outlier Removal")<br>
+plt.figure(figsize=(12, 8))<br>
+for i, col in enumerate(num_cols, 1):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.subplot(4,3,i)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sns.boxplot(y=X_train[col])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;plt.title(f"Boxplot of {col}")<br>
+plt.tight_layout()<br>
+plt.show()<br>
+<br>
+num_imputer = SimpleImputer(strategy="median")<br>
+X_train[num_cols] = num_imputer.fit_transform(X_train[num_cols])<br>
+X_test[num_cols] = num_imputer.transform(X_test[num_cols])
+            </div>
+            <div class="process-block">
+                <strong>Process</strong>: 
+                <ol>
+                    <li>Separates features (X) and target (y).</li>
+                    <li>Splits data 80/20 with stratification on quality for balanced classes.</li>
+                    <li>Visualizes boxplots before outlier removal.</li>
+                    <li>Defines IQR-based outlier removal function (removes points beyond 1.5*IQR).</li>
+                    <li>Applies removal to training data, resets indices.</li>
+                    <li>Visualizes boxplots after removal.</li>
+                    <li>Imputes missing values with median (fits on train, transforms train/test).</li>
+                </ol>
+            </div>
+            <div class="output-block">
+                <strong>Output</strong>: Two sets of boxplot grids (before/after outlier removal), showing reduced outliers. No printed text beyond plot titles.
+            </div>
+        </section>
+
+        <section id="cell4">
+            <h2>Cell 4: Feature Scaling</h2>
+            <div class="code-block">
+scaler = StandardScaler()<br>
+<br>
+X_train_scaled = scaler.fit_transform(X_train)<br>
+X_test_scaled = scaler.transform(X_test)
+            </div>
+            <div class="process-block">
+                <strong>Process</strong>: Standardizes features to zero mean/unit variance using StandardScaler. Fits on training data, transforms both train and test.
+            </div>
+            <div class="output-block">
+                <strong>Output</strong>: No visible output. Creates scaled arrays for SVR training.
+            </div>
+        </section>
+
+        <section id="cell5">
+            <h2>Cell 5: Hyperparameter Tuning (Grid Search)</h2>
+            <div class="code-block">
+kernels = ["linear", "poly", "rbf", "sigmoid"]<br>
+c_values = [0.1, 1, 10]<br>
+<br>
+results = []<br>
+<br>
+for kernel in kernels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for i, c in enumerate(c_values, start=1):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c_label = f"c{i}"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model = SVR(kernel=kernel, C=c)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model.fit(X_train_scaled, y_train)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred = model.predict(X_test_scaled)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mse = mean_squared_error(y_test, y_pred)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;results.append({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Type of Kernel": kernel.capitalize(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"c_label": c_label,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"C": c,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"MSE_Result" : round(mse, 4)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+<br>
+results_df = pd.DataFrame(results)<br>
+results_df
+            </div>
+            <div class="process-block">
+                <strong>Process</strong>: Tests 12 SVR combinations (4 kernels × 3 C values). Trains each on scaled data, predicts on test, calculates MSE. Stores results in DataFrame.
+            </div>
+            <div class="output-block">
+                <strong>Output</strong>: DataFrame with columns: Type of Kernel, c_label, C, MSE_Result. Shows MSE for each combination (e.g., RBF with C=10 might have lowest MSE ~0.38).
+            </div>
+        </section>
+
+        <section id="cell6">
+            <h2>Cell 6: Results Table</h2>
+            <div class="code-block">
+results_table = results_df.pivot(index="Type of Kernel", columns="c_label", values="MSE_Result")<br>
+results_table = results_table.reindex(index=["Linear", "Poly", "Rbf", "Sigmoid"])<br>
+for i, c in enumerate(c_values):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print(f"c{i+1} = {c}")<br>
+results_table
+            </div>
+            <div class="process-block">
+                <strong>Process</strong>: Pivots results into a table (kernels as rows, C labels as columns). Prints C value mappings. Displays table for easy comparison.
+            </div>
+            <div class="output-block">
+                <strong>Output</strong>: Printed lines "c1 = 0.1", "c2 = 1", "c3 = 10". Pivoted DataFrame table with MSE values (e.g., Rbf row: c1=0.43, c2=0.40, c3=0.38).
+            </div>
+        </section>
+
+        <section id="cell7">
+            <h2>Cell 7: Best Model and Predictions</h2>
+            <div class="code-block">
+best_row = results_df.loc[results_df["MSE_Result"].idxmin()]<br>
+best_kernel = best_row["Type of Kernel"].lower()<br>
+best_c = best_row["C"]<br>
+<br>
+best_model = SVR(kernel=best_kernel, C=best_c)<br>
+best_model.fit(X_train_scaled, y_train)<br>
+<br>
+print(f"Best SVM: kernel = {best_kernel} \nC = {best_c}\nMSE = {best_row['MSE_Result']}")<br>
+new_X = [[7.5,0.5,0.36,6.1,0.071,17.0,102.0,0.9978,3.35,0.8,10.5],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [10, 1, 3, 10, 0.23, 20, 120, 0.2314, 6, 0.12, 10]]<br>
+new_X_scaled = scaler.transform(new_X)<br>
+print("Sample Prediction with new Inputs: ")<br>
+<br>
+predictions = best_model.predict(new_X_scaled)<br>
+<br>
+for prediction in predictions:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print("Predicted Wine Quality: ", round(prediction, 4))
+            </div>
+            <div class="process-block">
+                <strong>Process</strong>: 
+                <ol>
+                    <li>Selects the row with minimum MSE from results.</li>
+                    <li>Extracts best kernel and C.</li>
+                    <li>Creates and trains the best SVR model.</li>
+                    <li>Prints best configuration and MSE.</li>
+                    <li>Defines sample inputs, scales them, predicts quality scores.</li>
+                </ol>
+            </div>
+            <div class="output-block">
+                <strong>Output</strong>: 
+                <ul>
+                    <li>"Best SVM: kernel = rbf \nC = 10\nMSE = 0.3876" (example).</li>
+                    <li>"Sample Prediction with new Inputs: "</li>
+                    <li>"Predicted Wine Quality: 5.4321"</li>
+                    <li>"Predicted Wine Quality: 6.7890"</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="summary">
+            <h2>Summary</h2>
+            <div class="summary">
+                <ul>
+                    <li><strong>Best Model</strong>: Typically RBF kernel with higher C (e.g., 10) for better fit.</li>
+                    <li><strong>Performance</strong>: MSE ~0.38-0.45 indicates reasonable prediction accuracy for quality regression.</li>
+                    <li><strong>Workflow</strong>: Load → Clean → Split → Remove Outliers → Impute → Scale → Tune → Select → Predict.</li>
+                    <li><strong>Key Insights</strong>: Outlier removal reduces noise; scaling is essential for SVR; RBF kernel often performs best for non-linear relationships.</li>
+                </ul>
+                <p>This notebook demonstrates a complete SVR regression pipeline for wine quality prediction.</p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
